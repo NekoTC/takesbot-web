@@ -52,7 +52,7 @@ function BindPageContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token,
-          source: 'offical',
+          source: 'diving_fish',
           syname,
           friend_code: null
         })
