@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function BindSuccessPage() {
+function BindSuccessContent() {
   const searchParams = useSearchParams();
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
@@ -246,4 +246,16 @@ export default function BindSuccessPage() {
       </div>
     );
   }
+}
+
+export default function BindSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900">
+        <div className="text-white text-xl">加载中...</div>
+      </div>
+    }>
+      <BindSuccessContent />
+    </Suspense>
+  );
 }
