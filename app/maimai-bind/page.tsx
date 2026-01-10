@@ -14,8 +14,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 function BindPageContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  const [activeTab, setActiveTab] = useState<'diving-fish' | 'lxns'>('diving-fish');
+  const [activeTab, setActiveTab] = useState<'diving-fish' | 'lxns' | 'official'>('diving-fish');
   const [divingFishToken, setDivingFishToken] = useState('');
+  const [officialUserID, setOfficialUserID] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -93,6 +94,53 @@ function BindPageContent() {
     window.location.href = `${LXNS_AUTHORIZE_URL}?${params.toString()}`;
   };
 
+  // 官方绑定处理
+  const handleOfficialBind = async () => {
+    if (!token) {
+      setMessage({ type: 'error', text: '缺少绑定令牌，请重新从机器人获取链接' });
+      return;
+    }
+    if (!officialUserID.trim()) {
+      setMessage({ type: 'error', text: '请输入官方二维码内容' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setMessage(null);
+
+    try {
+      // 调用后端接口完成绑定（后端会解析二维码）
+      const bindRes = await fetch(`${API_BASE_URL}/maimai/bind/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: token,
+          qrCode: officialUserID.trim(),  // 发送二维码内容而不是 userID
+          source: 'official'
+        })
+      });
+
+      if (!bindRes.ok) {
+        const errorData = await bindRes.json();
+        throw new Error(errorData.detail || '绑定失败，请重试');
+      }
+
+      const result = await bindRes.json();
+      setMessage({ type: 'success', text: result.message || '官方账号绑定成功！' });
+      setOfficialUserID('');
+      
+      // 2秒后重定向到成功页面
+      setTimeout(() => {
+        window.location.href = `/maimai-bind/success?status=success&auto_bind=1`;
+      }, 2000);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '绑定过程出错，请重试';
+      setMessage({ type: 'error', text: errorMessage });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 p-4">
@@ -140,6 +188,16 @@ function BindPageContent() {
             }`}
           >
             ❄️ 落雪查分器
+          </button>
+          <button
+            onClick={() => setActiveTab('official')}
+            className={`flex-1 py-4 text-center font-semibold transition-all ${
+              activeTab === 'official'
+                ? 'bg-white text-blue-600 border-b-2 border-blue-600'
+                : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+            }`}
+          >
+            🎯 官方查分器
           </button>
         </div>
 
@@ -228,6 +286,45 @@ function BindPageContent() {
               <p className="text-center text-sm text-gray-500">
                 授权完成后会自动返回并显示绑定结果
               </p>
+            </div>
+          )}
+
+          {/* 官方绑定 */}
+          {activeTab === 'official' && (
+            <div className="space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                  <span className="text-xl">💡</span>
+                  如何获取官方二维码？
+                </h3>
+                <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
+                  <li>在舞萌DX游戏机上登录您的 Aime 卡</li>
+                  <li>进入游戏后，在主界面选择「二维码」功能</li>
+                  <li>使用手机扫描屏幕上显示的二维码</li>
+                  <li>复制完整的二维码内容（以 SGWCMAID 开头）并粘贴到下方</li>
+                </ol>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  官方二维码内容 *
+                </label>
+                <input
+                  type="text"
+                  value={officialUserID}
+                  onChange={(e) => setOfficialUserID(e.target.value)}
+                  placeholder="粘贴以 SGWCMAID 开头的二维码内容"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-mono text-sm"
+                />
+              </div>
+
+              <button
+                onClick={handleOfficialBind}
+                disabled={isSubmitting || !officialUserID.trim()}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? '解析并绑定中...' : '确认绑定'}
+              </button>
             </div>
           )}
         </div>
