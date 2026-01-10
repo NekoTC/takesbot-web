@@ -298,9 +298,8 @@ function BindPageContent() {
                   如何获取官方二维码？
                 </h3>
                 <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
-                  <li>在舞萌DX游戏机上登录您的 Aime 卡</li>
-                  <li>进入游戏后，在主界面选择「二维码」功能</li>
-                  <li>使用手机扫描屏幕上显示的二维码</li>
+                  <li>在 舞萌|中二 中获取登入二维码</li>
+                  <li>长按识别</li>
                   <li>复制完整的二维码内容（以 SGWCMAID 开头）并粘贴到下方</li>
                 </ol>
               </div>
