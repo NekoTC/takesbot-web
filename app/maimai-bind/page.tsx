@@ -46,7 +46,7 @@ function BindPageContent() {
 
       const userData = await verifyRes.json();
       const syname = userData.username;
-
+      const sytoken = divingFishToken.trim()
       // 调用后端接口完成绑定
       const bindRes = await fetch(`${API_BASE_URL}/maimai/bind/complete`, {
         method: 'POST',
@@ -55,6 +55,7 @@ function BindPageContent() {
           token,
           source: 'diving_fish',
           syname,
+          sytoken,
           friend_code: null
         })
       });
