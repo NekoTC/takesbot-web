@@ -6,9 +6,10 @@ interface DivingFishFormProps {
   onSuccess: (syname: string) => void;
   onError: (message: string) => void;
   onStartSubmit: () => void;
+  onBack: () => void;
 }
 
-export function DivingFishForm({ token, onSuccess, onError, onStartSubmit }: DivingFishFormProps) {
+export function DivingFishForm({ token, onSuccess, onError, onStartSubmit, onBack }: DivingFishFormProps) {
   const [divingFishToken, setDivingFishToken] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -69,7 +70,19 @@ export function DivingFishForm({ token, onSuccess, onError, onStartSubmit }: Div
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300">
+      <div className="flex items-center mb-4">
+        <button 
+          onClick={onBack}
+          className="mr-3 p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h2 className="text-lg font-bold text-slate-700">水鱼查分器绑定</h2>
+      </div>
+
       <div className="bg-sky-50 border border-sky-100 rounded-2xl p-6">
         <h3 className="font-bold text-sky-900 mb-4 flex items-center gap-2.5">
           <div className="bg-white p-1.5 rounded-lg shadow-sm text-sky-500">
