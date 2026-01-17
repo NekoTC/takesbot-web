@@ -70,55 +70,66 @@ export function DivingFishForm({ token, onSuccess, onError, onStartSubmit, onBac
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300">
-      <div className="flex items-center mb-4">
+    <div className="space-y-6">
+      <div className="flex items-center mb-6 animate-fade-in-right stagger-1 opacity-0 fill-mode-forwards">
         <button 
           onClick={onBack}
-          className="mr-3 p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
+          className="mr-3 w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-colors text-[#444746]"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h2 className="text-lg font-bold text-slate-700">水鱼查分器绑定</h2>
+        <h2 className="text-[22px] font-normal text-[#1F1F1F]">水鱼查分器</h2>
       </div>
 
-      <div className="bg-sky-50 border border-sky-100 rounded-2xl p-6">
-        <h3 className="font-bold text-sky-900 mb-4 flex items-center gap-2.5">
-          <div className="bg-white p-1.5 rounded-lg shadow-sm text-sky-500">
+      <div className="bg-[#E1E1E1]/30 rounded-[16px] p-5 animate-fade-in-up stagger-2 opacity-0 fill-mode-forwards">
+        <div className="flex items-start gap-3">
+          <div className="text-[#00639B] mt-0.5">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
           </div>
-          如何获取 Token？
-        </h3>
-        <ol className="text-sm text-sky-800 space-y-3 list-decimal list-inside font-medium marker:text-sky-400">
-          <li>访问 <a href="https://www.diving-fish.com/maimaidx/prober/" target="_blank" rel="noopener noreferrer" className="text-sky-600 underline decoration-sky-300 underline-offset-2 hover:text-sky-700">水鱼查分器</a></li>
-          <li>点击右上角「编辑个人资料」</li>
-          <li>找到「成绩导入Token」并复制</li>
-        </ol>
+          <div>
+             <h3 className="text-sm font-medium text-[#1F1F1F] mb-1">
+              如何获取 Token？
+            </h3>
+            <ol className="text-xs text-[#444746] space-y-1 list-decimal list-inside leading-relaxed">
+              <li>访问 <a href="https://www.diving-fish.com/maimaidx/prober/" target="_blank" rel="noopener noreferrer" className="text-[#00639B] underline font-medium hover:text-[#004A77] transition-colors">水鱼查分器</a></li>
+              <li>「编辑个人资料」→「成绩导入Token」</li>
+            </ol>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">
-          查分器 Token
-        </label>
-        <input
-          type="text"
-          value={divingFishToken}
-          onChange={(e) => setDivingFishToken(e.target.value)}
-          placeholder="在此粘贴您的 Token"
-          className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-sky-100 focus:border-sky-400 focus:bg-white text-slate-800 placeholder:text-slate-400 transition-all outline-none font-medium"
-        />
+      <div className="pt-2 animate-fade-in-up stagger-3 opacity-0 fill-mode-forwards">
+        <div className="relative group">
+          <input
+            type="text"
+            id="token_input"
+            value={divingFishToken}
+            onChange={(e) => setDivingFishToken(e.target.value)}
+            className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-[#1F1F1F] bg-transparent rounded-lg border border-[#747775] appearance-none focus:outline-none focus:ring-0 focus:border-[#00639B] focus:border-2 peer h-[56px] transition-colors"
+            placeholder=" "
+          />
+          <label 
+            htmlFor="token_input" 
+            className="absolute text-sm text-[#747775] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-[#00639B] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-medium bg-opacity-0 peer-focus:bg-white"
+          >
+            查分器 Token
+          </label>
+        </div>
       </div>
 
-      <button
-        onClick={handleDivingFishBind}
-        disabled={isSubmitting || !divingFishToken.trim()}
-        className="w-full bg-sky-500 hover:bg-sky-600 active:scale-[0.98] text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-200 hover:shadow-xl hover:shadow-sky-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-      >
-        {isSubmitting ? '正在绑定...' : '确认绑定'}
-      </button>
+      <div className="flex justify-end pt-4 animate-fade-in-up stagger-3 opacity-0 fill-mode-forwards">
+        <button
+          onClick={handleDivingFishBind}
+          disabled={isSubmitting || !divingFishToken.trim()}
+          className="bg-[#00639B] text-white text-sm font-medium py-3 px-8 rounded-full hover:bg-[rgba(0,99,155,0.92)] hover:shadow-md transition-all disabled:opacity-50 disabled:shadow-none min-w-[100px] active:scale-[0.98] transform"
+        >
+          {isSubmitting ? '绑定中' : '绑定'}
+        </button>
+      </div>
     </div>
   );
 }

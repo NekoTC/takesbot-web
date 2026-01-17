@@ -27,60 +27,39 @@ export function LxnsSection({ token, onError, onBack }: LxnsSectionProps) {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300">
-      <div className="flex items-center mb-4">
+    <div className="space-y-6">
+      <div className="flex items-center mb-6 animate-fade-in-right stagger-1 opacity-0 fill-mode-forwards">
         <button 
           onClick={onBack}
-          className="mr-3 p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
+          className="mr-3 w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-colors text-[#444746]"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h2 className="text-lg font-bold text-slate-700">落雪查分器绑定</h2>
+        <h2 className="text-[22px] font-normal text-[#1F1F1F]">落雪查分器</h2>
       </div>
 
-      <div className="bg-pink-50 border border-pink-100 rounded-2xl p-6">
-        <h3 className="font-bold text-pink-900 mb-4 flex items-center gap-2.5">
-          <div className="bg-white p-1.5 rounded-lg shadow-sm text-pink-500">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="bg-[#FFF0F4] rounded-[24px] p-8 text-center animate-scale-in stagger-2 opacity-0 fill-mode-forwards origin-bottom">
+        <div className="w-16 h-16 mx-auto bg-[#FFD8E4] rounded-full flex items-center justify-center text-[#31111D] mb-4">
+           <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 018 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.2-2.848.578-4.156" />
             </svg>
-          </div>
-          OAuth 快速绑定
-        </h3>
-        <p className="text-sm text-pink-800/80 mb-4 font-medium leading-relaxed">
-          我们将跳转到落雪查分器进行安全授权，完成后自动返回。
-        </p>
-        <div className="bg-white/60 rounded-xl p-4 text-xs text-pink-700 border border-pink-100/50">
-          <p className="font-bold mb-2 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
-            准备工作
-          </p>
-          <ul className="list-none space-y-1.5 ml-1">
-            <li className="flex gap-2">
-              <span className="text-pink-300">•</span>
-              拥有落雪查分器账号
-            </li>
-            <li className="flex gap-2">
-              <span className="text-pink-300">•</span>
-              已在查分器上传过数据
-            </li>
-          </ul>
         </div>
+        <h3 className="text-[#31111D] font-medium text-lg mb-2">OAuth 快速绑定</h3>
+        <p className="text-[#492532] text-sm mb-8 leading-relaxed max-w-[80%] mx-auto">
+          将跳转到落雪查分器进行安全授权，<br/>需确保已拥有账号并上传过数据。
+        </p>
+
+        <button
+          onClick={handleLxnsBind}
+          className="bg-[#31111D] text-white text-sm font-medium py-3.5 px-8 rounded-full hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all w-full max-w-[200px]"
+        >
+          去授权
+        </button>
       </div>
 
-      <button
-        onClick={handleLxnsBind}
-        className="w-full bg-pink-500 hover:bg-pink-600 active:scale-[0.98] text-white font-bold py-4 rounded-xl shadow-lg shadow-pink-200 hover:shadow-xl hover:shadow-pink-300 transition-all flex items-center justify-center gap-2.5"
-      >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-        前往授权绑定
-      </button>
-
-      <p className="text-center text-xs text-slate-400 font-medium">
+      <p className="text-center text-[10px] text-[#747775] animate-fade-in-up stagger-3 opacity-0 fill-mode-forwards">
         授权过程由落雪查分器提供安全保障
       </p>
     </div>

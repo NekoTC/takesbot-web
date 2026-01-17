@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { MethodSelector } from './components/MethodSelector';
 import { MessageAlert } from './components/MessageAlert';
@@ -17,6 +17,12 @@ function BindPageContent() {
   const token = searchParams.get('token');
   const [currentStep, setCurrentStep] = useState<BindStep>('selection');
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [isHere, setIsHere] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsHere(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!token) {
     return <MissingTokenState />;
@@ -28,39 +34,78 @@ function BindPageContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f0f4f8] bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:20px_20px] p-4">
-      <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden max-w-xl w-full">
-        <Header />
+    <div className={`min-h-screen flex items-center justify-center bg-[#F2F6FC] text-[#1F1F1F] p-4 font-sans transition-opacity duration-700 ${isHere ? 'opacity-100' : 'opacity-0'}`}>
+      <style jsx global>{`
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in-right {
+          from { opacity: 0; transform: translateX(10px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scale-in {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 0.4s cubic-bezier(0.2, 0.0, 0, 1.0) forwards;
+        }
+        .animate-fade-in-right {
+          animation: fade-in-right 0.3s cubic-bezier(0.2, 0.0, 0, 1.0) forwards;
+        }
+        .animate-scale-in {
+          animation: scale-in 0.3s cubic-bezier(0.2, 0.0, 0, 1.0) forwards;
+        }
+        .stagger-1 { animation-delay: 50ms; }
+        .stagger-2 { animation-delay: 100ms; }
+        .stagger-3 { animation-delay: 150ms; }
+      `}</style>
 
-        {/* 内容区 */}
-        <div className="p-8 min-h-[400px]">
-          {message && <MessageAlert type={message.type} text={message.text} />}
+      <div className="bg-white rounded-[32px] p-2 max-w-[560px] w-full mx-auto md:shadow-md md:shadow-black/5 transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)] hover:shadow-lg hover:shadow-black/5">
+        <div className="p-6 md:p-8">
+          <Header />
 
-          {/* 选择步骤 */}
-          {currentStep === 'selection' && (
-            <MethodSelector onSelect={setCurrentStep} />
-          )}
+          {/* 内容区 */}
+          <div className="mt-4 min-h-[300px] relative">
+            {message && (
+              <div className="animate-scale-in origin-top">
+                <MessageAlert type={message.type} text={message.text} />
+              </div>
+            )}
 
-          {/* 水鱼绑定 */}
-          {currentStep === 'diving-fish' && (
-            <DivingFishForm
-              token={token}
-              onSuccess={(syname) => setMessage({ type: 'success', text: `绑定成功！玩家名：${syname}` })}
-              onError={(errorMsg) => setMessage({ type: 'error', text: errorMsg })}
-              onStartSubmit={() => setMessage(null)}
-              onBack={handleBack}
-            />
-          )}
+            {/* 选择步骤 */}
+            {currentStep === 'selection' && (
+              <div className="animate-fade-in-up">
+                <MethodSelector onSelect={setCurrentStep} />
+              </div>
+            )}
 
-          {/* 落雪绑定 */}
-          {currentStep === 'lxns' && (
-            <LxnsSection
-              token={token}
-              onError={(errorMsg) => setMessage({ type: 'error', text: errorMsg })}
-              onBack={handleBack}
-            />
-          )}
+            {/* 水鱼绑定 */}
+            {currentStep === 'diving-fish' && (
+              <div className="animate-fade-in-right">
+                <DivingFishForm
+                  token={token}
+                  onSuccess={(syname) => setMessage({ type: 'success', text: `绑定成功！玩家名：${syname}` })}
+                  onError={(errorMsg) => setMessage({ type: 'error', text: errorMsg })}
+                  onStartSubmit={() => setMessage(null)}
+                  onBack={handleBack}
+                />
+              </div>
+            )}
 
+            {/* 落雪绑定 */}
+            {currentStep === 'lxns' && (
+              <div className="animate-fade-in-right">
+                <LxnsSection
+                  token={token}
+                  onError={(errorMsg) => setMessage({ type: 'error', text: errorMsg })}
+                  onBack={handleBack}
+                />
+              </div>
+            )}
+
+          </div>
         </div>
 
         <Footer />
