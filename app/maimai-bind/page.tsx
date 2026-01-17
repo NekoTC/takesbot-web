@@ -22,8 +22,8 @@ function BindPageContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4">
-      <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden max-w-2xl w-full">
+    <div className="min-h-screen flex items-center justify-center bg-[#f0f4f8] bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:20px_20px] p-4">
+      <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden max-w-2xl w-full">
         <Header />
 
         <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
@@ -63,8 +63,8 @@ function BindPageContent() {
 export default function MaimaiBindPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-indigo-900">
-        <div className="text-white text-xl">加载中...</div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="text-slate-400 text-lg font-medium animate-pulse">加载中...</div>
       </div>
     }>
       <BindPageContent />

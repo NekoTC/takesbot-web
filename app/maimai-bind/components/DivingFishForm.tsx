@@ -70,37 +70,41 @@ export function DivingFishForm({ token, onSuccess, onError, onStartSubmit }: Div
 
   return (
     <div className="space-y-6">
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
-        <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
-          <span className="text-xl">💡</span>
-          如何获取水鱼查分器Token？
+      <div className="bg-sky-50 border border-sky-100 rounded-2xl p-6">
+        <h3 className="font-bold text-sky-900 mb-4 flex items-center gap-2.5">
+          <div className="bg-white p-1.5 rounded-lg shadow-sm text-sky-500">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          如何获取 Token？
         </h3>
-        <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
-          <li>访问 <a href="https://www.diving-fish.com/maimaidx/prober/" target="_blank" rel="noopener noreferrer" className="underline font-medium">水鱼查分器</a></li>
-          <li>点击右上角「编辑个人资料」→「成绩导入Token」</li>
-          <li>复制令牌并粘贴到下方输入框</li>
+        <ol className="text-sm text-sky-800 space-y-3 list-decimal list-inside font-medium marker:text-sky-400">
+          <li>访问 <a href="https://www.diving-fish.com/maimaidx/prober/" target="_blank" rel="noopener noreferrer" className="text-sky-600 underline decoration-sky-300 underline-offset-2 hover:text-sky-700">水鱼查分器</a></li>
+          <li>点击右上角「编辑个人资料」</li>
+          <li>找到「成绩导入Token」并复制</li>
         </ol>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          水鱼查分器Token *
+        <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">
+          查分器 Token
         </label>
         <input
           type="text"
           value={divingFishToken}
           onChange={(e) => setDivingFishToken(e.target.value)}
-          placeholder="粘贴您的水鱼查分器令牌"
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+          placeholder="在此粘贴您的 Token"
+          className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-sky-100 focus:border-sky-400 focus:bg-white text-slate-800 placeholder:text-slate-400 transition-all outline-none font-medium"
         />
       </div>
 
       <button
         onClick={handleDivingFishBind}
         disabled={isSubmitting || !divingFishToken.trim()}
-        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-sky-500 hover:bg-sky-600 active:scale-[0.98] text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-200 hover:shadow-xl hover:shadow-sky-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
       >
-        {isSubmitting ? '绑定中...' : '确认绑定'}
+        {isSubmitting ? '正在绑定...' : '确认绑定'}
       </button>
     </div>
   );
