@@ -1,13 +1,30 @@
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useMemo, Suspense, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+
+const Layout = ({ children, isHere }: { children: React.ReactNode; isHere: boolean }) => (
+  <div className={`min-h-screen flex items-center justify-center bg-[#F2F6FC] dark:bg-[#111318] text-[#1F1F1F] dark:text-[#E2E2E6] p-4 font-sans transition-colors duration-700 opacity-0 ${isHere ? 'opacity-100' : ''}`}>
+    <div className="bg-white dark:bg-[#1E1F23] rounded-[32px] p-2 max-w-[560px] w-full mx-auto md:shadow-md md:shadow-black/5 dark:md:shadow-black/20 transition-all duration-500 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20">
+      <div className="p-8 md:p-10 text-center">
+          {children}
+      </div>
+    </div>
+  </div>
+);
 
 function BindSuccessContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
+  const [isHere, setIsHere] = useState(false);
 
-  // 从 URL 参数直接计算状态，避免在 effect 中设置状态
+  useEffect(() => {
+    const timer = setTimeout(() => setIsHere(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 从 URL 参数直接计算状态
   const { status, playerName, authCode, errorMessage, autoBindSuccess } = useMemo(() => {
     const statusParam = searchParams.get('status');
     const playerParam = searchParams.get('player');
@@ -68,29 +85,33 @@ function BindSuccessContent() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900">
-        <div className="text-white text-xl">加载中...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#F2F6FC] dark:bg-[#111318]">
+        <div className="text-[#444746] dark:text-[#C4C7C5] text-lg font-medium animate-pulse">处理中...</div>
       </div>
     );
   }
 
   if (status === 'error') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 p-4">
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-10 max-w-md w-full text-center animate-[slideUp_0.5s_ease-out]">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-5xl">❌</span>
+      <Layout isHere={isHere}>
+          <div className="animate-scale-in origin-center">
+            <div className="w-20 h-20 bg-[#FFDAD6] dark:bg-[#93000A] text-[#410002] dark:text-[#FFDAD6] rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+            <h1 className="text-[28px] font-normal text-[#1F1F1F] dark:text-[#E2E2E6] mb-4">绑定失败</h1>
+            <p className="text-[#444746] dark:text-[#C4C7C5] mb-8 leading-relaxed text-sm">
+                {errorMessage}
+            </p>
+            <button
+                onClick={() => router.push('/maimai-bind')}
+                className="bg-[#00639B] dark:bg-[#A8C7FA] text-white dark:text-[#003258] px-8 py-3.5 rounded-full text-sm font-medium hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all w-full md:w-auto min-w-[140px]"
+            >
+                返回重试
+            </button>
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">绑定失败</h1>
-          <p className="text-gray-600 mb-6">{errorMessage}</p>
-          <a
-            href="/maimai-bind"
-            className="inline-block bg-purple-600 text-white px-8 py-3 rounded-xl hover:bg-purple-700 transition-colors"
-          >
-            返回重试
-          </a>
-        </div>
-      </div>
+      </Layout>
     );
   }
 
@@ -98,152 +119,100 @@ function BindSuccessContent() {
   if (autoBindSuccess) {
     // 自动绑定成功
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 p-4">
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-10 max-w-md w-full text-center animate-[slideUp_0.6s_cubic-bezier(0.175,0.885,0.32,1.275)]">
-          {/* 成功图标 */}
-          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-12 h-12" viewBox="0 0 52 52">
-              <circle
-                className="stroke-green-500 fill-none"
-                strokeWidth="3"
-                cx="26"
-                cy="26"
-                r="25"
-              />
-              <path
-                className="stroke-green-500 fill-none animate-[checkmark_0.3s_0.8s_forwards]"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray="48"
-                strokeDashoffset="48"
-                d="M14.1 27.2l7.1 7.2 16.7-16.8"
-              />
-            </svg>
-          </div>
+      <Layout isHere={isHere}>
+         <div className="animate-fade-in-up stagger-1 opacity-0 fill-mode-forwards">
+             <div className="w-20 h-20 bg-[#C4EDD0] dark:bg-[#00512B] text-[#00210E] dark:text-[#C4EDD0] rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+             </div>
+             <h1 className="text-[28px] font-normal text-[#1F1F1F] dark:text-[#E2E2E6] mb-2">绑定成功</h1>
+             <div className="inline-block bg-[#F0F4FC] dark:bg-[#282A2F] text-[#00639B] dark:text-[#A8C7FA] px-4 py-1.5 rounded-full text-base font-medium mb-6">
+                 {playerName}
+             </div>
+             <div className="text-[#444746] dark:text-[#C4C7C5] mb-8 text-sm leading-relaxed">
+                 您的账号已成功关联至<span className="text-[#00639B] dark:text-[#A8C7FA] font-medium mx-1">落雪系统</span>
+                 <br />现在可以返回 QQ 使用了
+             </div>
 
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">绑定成功</h1>
+             {/* 授权码备用显示 */}
+             {authCode && (
+                 <div className="bg-[#F0F4FC] dark:bg-[#282A2F] px-4 py-3 rounded-xl mb-6 border border-white/0">
+                     <span className="text-[#747775] dark:text-[#8E918F] text-[10px] block mb-1 uppercase tracking-wider">Debug Auth Code</span>
+                     <span className="font-mono text-xs text-[#1F1F1F] dark:text-[#E2E2E6] break-all select-all">{authCode}</span>
+                 </div>
+             )}
 
-          <div className="inline-block bg-purple-100 text-purple-700 px-6 py-2 rounded-full text-lg font-semibold mb-6">
-            {playerName}
-          </div>
-
-          <div className="text-gray-600 mb-6 leading-relaxed">
-            您的账号已成功关联至<strong className="text-purple-600">落雪系统</strong>
-            <br />
-            现在可以返回 QQ 使用了
-          </div>
-
-          {authCode && (
-            <div className="bg-gray-50 px-4 py-3 rounded-lg mb-4 border border-gray-200">
-              <span className="text-gray-400 text-xs block mb-1">授权码（备用）</span>
-              <span className="font-mono text-sm text-gray-600 break-all">{authCode}</span>
-            </div>
-          )}
-
-          <button
-            onClick={() => window.close()}
-            className="w-full bg-purple-600 text-white px-8 py-3 rounded-xl hover:bg-purple-700 transition-all active:scale-95 mt-6 font-medium"
-          >
-            我知道了
-          </button>
-        </div>
-
-        <style jsx>{`
-          @keyframes slideUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          @keyframes checkmark {
-            to {
-              stroke-dashoffset: 0;
-            }
-          }
-        `}</style>
-      </div>
+             <button
+                 onClick={() => window.close()}
+                 className="bg-[#00639B] dark:bg-[#A8C7FA] text-white dark:text-[#003258] px-8 py-3.5 rounded-full text-sm font-medium hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all w-full"
+             >
+                 完成
+             </button>
+         </div>
+      </Layout>
     );
   } else {
     // 需要手动绑定
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 p-4">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 max-w-md w-full animate-[slideUp_0.5s_ease-out]">
-          {/* 授权图标 */}
-          <div className="w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
-            🔐
-          </div>
-
-          <h1 className="text-2xl font-bold text-gray-800 text-center mb-3">授权成功</h1>
-          <div className="text-center text-gray-600 mb-6">
-            当前玩家：<strong className="text-purple-600">{playerName}</strong>
-          </div>
-
-          {/* 授权码区域 */}
-          <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl p-5 mb-5">
-            <div 
-              className="font-mono text-xl font-bold text-gray-800 break-all tracking-wide mb-4 select-all"
-              id="authCode"
-            >
-              {authCode}
+      <Layout isHere={isHere}>
+        <div className="animate-fade-in-up stagger-1 opacity-0 fill-mode-forwards">
+            <div className="w-20 h-20 bg-[#EADDFF] dark:bg-[#4F378B] text-[#21005D] dark:text-[#EADDFF] rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
             </div>
-            <button
-              onClick={copyCode}
-              className={`w-full px-6 py-3 rounded-lg font-semibold transition-all active:scale-95 shadow-lg ${
-                copySuccess
-                  ? 'bg-green-500 text-white shadow-green-500/30'
-                  : 'bg-purple-600 text-white shadow-purple-600/30 hover:bg-purple-700'
-              }`}
-            >
-              <span className="flex items-center justify-center gap-2">
-                {copySuccess ? (
-                  <>
-                    <span>✅</span>
-                    <span>已成功复制</span>
-                  </>
-                ) : (
-                  <>
-                    <span>📋</span>
-                    <span>复制授权码</span>
-                  </>
-                )}
-              </span>
-            </button>
-          </div>
-
-          {/* 引导区 */}
-          <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-            <div className="text-sm font-bold text-gray-600 mb-2 flex items-center gap-2">
-              💡 下一步：返回聊天框 @塔可Bot 发送
+            <h1 className="text-[28px] font-normal text-[#1F1F1F] dark:text-[#E2E2E6] mb-2">授权成功</h1>
+            <div className="text-[#444746] dark:text-[#C4C7C5] text-sm mb-8">
+                当前玩家：<span className="font-medium text-[#1F1F1F] dark:text-[#E2E2E6]">{playerName}</span>
             </div>
-            <div className="bg-white px-3 py-2 rounded-lg font-mono text-sm text-pink-600 border border-gray-200 break-all">
-              /bindlx {authCode}
-            </div>
-          </div>
 
-          <div className="text-center text-xs text-gray-400 mt-5">
-            授权码有效期为 10 分钟，请尽快绑定
-          </div>
+            <div className="bg-[#F0F4FC] dark:bg-[#282A2F] rounded-[24px] p-6 mb-6 relative group border border-transparent hover:border-[#D3E3FD] dark:hover:border-[#005FA3] transition-colors">
+                <div className="font-mono text-2xl font-medium text-[#1F1F1F] dark:text-[#E2E2E6] break-all tracking-wide mb-6 select-all text-center">
+                    {authCode}
+                </div>
+                <button
+                    onClick={copyCode}
+                    className={`w-full py-3.5 rounded-full font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+                        copySuccess
+                            ? 'bg-[#C4EDD0] dark:bg-[#00512B] text-[#0A3818] dark:text-[#C4EDD0]'
+                            : 'bg-[#D3E3FD] dark:bg-[#004A77] text-[#001D35] dark:text-[#C2E7FF] hover:shadow-md'
+                    }`}
+                >
+                     {copySuccess ? (
+                        <>
+                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                             <span>已复制</span>
+                        </>
+                     ) : (
+                        <>
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            <span>复制授权码</span>
+                        </>
+                     )}
+                </button>
+            </div>
+
+            <div className="bg-[#FFF8F3] dark:bg-[#3E2D12] text-[#553F00] dark:text-[#FFDCBB] p-4 rounded-[16px] text-left mb-6">
+                <div className="flex items-start gap-3">
+                     <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                         <p className="text-xs font-medium mb-1.5 opacity-80">下一步操作</p>
+                         <p className="text-sm">
+                            返回 QQ 聊天框 @机器人 发送：<br/>
+                            <code className="bg-[#FFDCBB] dark:bg-[#584424] px-1.5 rounded inline-block mt-1 select-all">/bindlx {authCode}</code>
+                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="text-center text-[11px] text-[#747775] dark:text-[#8E918F]">
+                授权码有效期为 10 分钟，请尽快完成绑定
+            </div>
         </div>
-
-        <style jsx>{`
-          @keyframes slideUp {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}</style>
-      </div>
+      </Layout>
     );
   }
 }
@@ -251,8 +220,8 @@ function BindSuccessContent() {
 export default function BindSuccessPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900">
-        <div className="text-white text-xl">加载中...</div>
+       <div className="min-h-screen flex items-center justify-center bg-[#F2F6FC] dark:bg-[#111318]">
+        <div className="text-[#444746] dark:text-[#C4C7C5] text-lg font-medium animate-pulse">处理中...</div>
       </div>
     }>
       <BindSuccessContent />
