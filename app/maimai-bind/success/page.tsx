@@ -18,11 +18,27 @@ function BindSuccessContent() {
   const router = useRouter();
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const [isHere, setIsHere] = useState(false);
+  const [closeText, setCloseText] = useState('完成');
 
   useEffect(() => {
     const timer = setTimeout(() => setIsHere(true), 50);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleClose = () => {
+    // 尝试关闭窗口
+    try {
+      window.opener = null;
+      window.open('', '_self');
+      window.close();
+    } catch {
+      // ignore
+    }
+    
+    // 如果执行到这里说明窗口可能没关掉（或者正在关闭）
+    // 修改按钮文字提示用户
+    setCloseText('请手动关闭此页面');
+  };
 
   // 从 URL 参数直接计算状态
   const { status, playerName, authCode, errorMessage, autoBindSuccess } = useMemo(() => {
@@ -144,10 +160,10 @@ function BindSuccessContent() {
              )}
 
              <button
-                 onClick={() => window.close()}
+                 onClick={handleClose}
                  className="bg-[#00639B] dark:bg-[#A8C7FA] text-white dark:text-[#003258] px-8 py-3.5 rounded-full text-sm font-medium hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all w-full"
              >
-                 完成
+                 {closeText}
              </button>
          </div>
       </Layout>
